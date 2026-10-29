@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#153b2b">
+<title>Mattersburg bestellt</title>
+<style>
+:root{--green:#153b2b;--lime:#d7f36a;--cream:#f8f7f1;--ink:#18231d;--muted:#68746d;--line:#dce3dc;--white:#fff;--red:#a62d2d}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:var(--green);color:white;padding:26px 20px 32px;border-radius:0 0 28px 28px}
+.wrap{width:min(1050px,100% - 32px);margin:auto}.top{display:flex;justify-content:space-between;gap:18px;align-items:center}.brand{font-weight:900;letter-spacing:-.04em;font-size:clamp(24px,4vw,36px)}.tag{background:var(--lime);color:var(--green);border-radius:999px;padding:8px 12px;font-weight:800;font-size:12px}
+header p{color:#dbe7df;max-width:600px;margin:12px 0 0;line-height:1.55}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}button,.btn{border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:750;cursor:pointer;background:var(--green);color:white}button.secondary{background:#e5ebe5;color:var(--green)}button.active{background:var(--lime);color:var(--green)}button:disabled{opacity:.45;cursor:not-allowed}
+.layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:18px;align-items:start}.panel{background:white;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 5px 20px #173a2b0a}.panel h2{margin:0 0 14px;letter-spacing:-.03em}.muted{color:var(--muted);font-size:14px;line-height:1.5}.warning{background:#fff7df;border:1px solid #ead48b;border-radius:14px;padding:13px 15px;margin:14px 0;color:#554618;font-size:13px;line-height:1.5}
+.pay{background:#effaf2;border:1px solid #b9d8c4;border-radius:14px;padding:14px;margin:14px 0}.pay strong{display:block;margin-bottom:4px}.restaurants{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.restaurant{border:1px solid var(--line);border-radius:15px;padding:14px;background:white;color:var(--ink);text-align:left}.restaurant.selected{border:2px solid var(--green);background:#f1f8ee}.restaurant span{display:block}.restaurant small{color:var(--muted);margin-top:5px;display:block}
+.menu{display:grid;gap:10px;margin-top:15px}.item{display:flex;gap:12px;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:14px;padding:13px}.item h3{font-size:15px;margin:0 0 4px}.item p{font-size:12px;color:var(--muted);margin:0 0 5px}.price{font-weight:850}.qty{display:flex;align-items:center;gap:8px}.qty button{padding:6px 10px;border-radius:9px}.qty span{min-width:12px;text-align:center}
+label{font-size:13px;font-weight:750;display:block;margin:13px 0 6px}input,textarea,select{width:100%;padding:12px;border:1px solid #cbd5cc;border-radius:11px;font:inherit;background:white;color:var(--ink)}textarea{min-height:78px;resize:vertical}.cart-row{display:flex;justify-content:space-between;gap:10px;margin:10px 0;font-size:14px}.total{border-top:1px solid var(--line);padding-top:14px;margin-top:14px;font-size:20px;font-weight:900;display:flex;justify-content:space-between}.wide{width:100%;margin-top:15px}.status{padding:12px;border-radius:12px;background:#effaf2;margin-top:12px;line-height:1.5}.hidden{display:none!important}.order{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}.order-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.pill{font-size:12px;background:#eaf0e9;border-radius:999px;padding:5px 9px;font-weight:800}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 0}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.restaurants{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.panel{padding:16px}.admin-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="top"><div class="brand">Mattersburg bestellt<span style="color:var(--lime)">.</span></div><div class="tag">ZAHLUNG VOR ORT</div></div><p>Speisen auswählen, Namen angeben und Bestellung abschicken. Kein Kundenkonto und keine Online-Zahlung nötig.</p></div></header>
+<main class="wrap">
+<nav><button id="tabOrder" class="active" type="button">Bestellen</button><button id="tabAdmin" class="secondary" type="button">Liste · Admin</button></nav>
+<div class="warning"><strong>Hinweis vor dem Live-Start:</strong> Die angezeigten Speisen und Preise sind Demo-Einträge und müssen mit den Restaurants abgestimmt werden. Bestellungen werden erst nach Installation auf einem Server tatsächlich gespeichert und an die Restaurants übermittelt.</div>
+<section id="orderView" class="layout">
+<div class="panel">
+<h2>1. Restaurant auswählen</h2>
+<div class="restaurants" id="restaurants"></div>
+<h2 style="margin-top:24px">2. Speisen auswählen</h2>
+<div class="menu" id="menu"><p class="muted">Bitte wähle zuerst ein Restaurant.</p></div>
+</div>
+<aside class="panel">
+<h2>Deine Bestellung</h2><div id="cart"><p class="muted">Du hast noch nichts ausgewählt.</p></div>
+<div class="total"><span>Gesamt</span><span id="total">€ 0,00</span></div>
+<div class="pay"><strong>💶 Bezahlung ausschließlich vor Ort</strong><span class="muted">Keine Kreditkartenzahlung, keine Online-Zahlung. Du bezahlst direkt beim Restaurant.</span></div>
+<label for="customerName">Dein Name *</label><input id="customerName" maxlength="80" autocomplete="name" placeholder="Vor- und Nachname">
+<label for="note">Anmerkung (optional)</label><textarea id="note" maxlength="500" placeholder="Zum Beispiel Hinweise zur Bestellung"></textarea>
+<button class="wide" id="submitOrder" type="button">Bestellung abschicken</button>
+<div id="orderStatus" aria-live="polite"></div>
+<p class="muted">Mit dem Abschicken wird eine Bestellung angefragt. Bitte beachte, dass das Restaurant die Bestellung erst bestätigen muss.</p>
+</aside>
+</section>
+<section id="adminView" class="panel hidden">
+<h2>Geschützte Bestellliste</h2>
+<p class="muted">Nur für berechtigte Administratoren. Zugangsdaten werden auf dem Server festgelegt.</p>
+<div id="loginPanel">
+<div class="admin-grid"><div><label for="adminUser">Benutzername</label><input id="adminUser" autocomplete="username"></div><div><label for="adminPass">Passwort</label><input id="adminPass" type="password" autocomplete="current-password"></div></div>
+<button id="loginBtn" type="button" style="margin-top:12px">Anmelden</button><div id="loginStatus" aria-live="polite"></div>
+</div>
+<div id="adminOrders" class="hidden"><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center"><p class="muted">Bestellungen, Gesamtbetrag und Status</p><div><button id="refreshOrders" class="secondary" type="button">Aktualisieren</button> <button id="logoutBtn" class="secondary" type="button">Abmelden</button></div></div><div id="ordersList"></div></div>
+</section>
+<div class="footer">Mattersburg bestellt · Bezahlung vor Ort · Keine Online-Zahlung</div>
+</main>
+<script src="/app.js" defer></script>
+</body></html>
